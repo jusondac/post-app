@@ -1,7 +1,7 @@
 class PublishersController < ApplicationController
   before_action :authenticate_user!
-  before_action :check_admin_role
-  before_action :set_publisher, only: [ :show, :edit, :update, :destroy ]
+  before_action :check_admin_role, only: [:edit, :update, :destroy, :new, :create]
+  before_action :set_publisher, only: [:show, :edit, :update, :destroy ]
 
   def index
     @publishers = Publisher.order(:name)

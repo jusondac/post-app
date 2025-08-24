@@ -34,8 +34,17 @@ class PostsController < ApplicationController
   def create
     @post = current_user.posts.build(post_params)
 
+    # Handle draft button
+    if params[:draft]
+      @post.status = "draft"
+    end
+
     if @post.save
-      redirect_to @post, notice: "Post was successfully created."
+      if @post.draft?
+        redirect_to @post, notice: "Post was successfully saved as draft."
+      else
+        redirect_to @post, notice: "Post was successfully published."
+      end
     else
       @publishers = Publisher.active.order(:name)
       render :new, status: :unprocessable_entity
