@@ -1,0 +1,166 @@
+<div class="max-w-4xl mx-auto p-6">
+  <div class="bg-white shadow rounded-lg">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h1 class="text-2xl font-bold text-gray-800">Authorization & Permissions</h1>
+      <p class="text-gray-600 mt-1">Understanding your role and what you can do in this application</p>
+    </div>
+    <!-- Current User Info -->
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center space-x-4">
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
+            <span class="text-lg font-medium text-gray-700">
+              <%= current_user.email.first.upcase %>
+            </span>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-lg font-medium text-gray-800"><%= current_user.email %></h2>
+          <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-600">Role:</span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+                       <%= case @user_role
+                           when 'master' then 'bg-purple-100 text-purple-800'
+                           when 'admin' then 'bg-red-100 text-red-800'
+                           else 'bg-green-100 text-green-800'
+                           end %>">
+              <%= @user_role.capitalize %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- User Management (Only for Master users) -->
+    <% if current_user.can_manage_users? && @all_users.present? %>
+      <div class="p-6 ">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">User Management</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  User
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Current Role
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Update Role
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @all_users.each do |user| %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                          <span class="text-sm font-medium text-gray-700">
+                            <%= user.email.first.upcase %>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900"><%= user.email %></div>
+                        <div class="text-sm text-gray-500">
+                          <%= user == current_user ? "(You)" : "" %>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+                               <%= case user.role
+                                   when 'master' then 'bg-purple-100 text-purple-800'
+                                   when 'admin' then 'bg-red-100 text-red-800'
+                                   else 'bg-green-100 text-green-800'
+                                   end %>">
+                      <%= user.role.capitalize %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <% if user != current_user %>
+                      <%= form_with url: authorization_update_user_role_path, method: :patch, local: true, class: "flex items-center space-x-2" do |form| %>
+                        <%= form.hidden_field :user_id, value: user.id %>
+                        <%= form.select :role, 
+                            options_for_select([
+                              ['User', 'user'], 
+                              ['Admin', 'admin'], 
+                              ['Master', 'master']
+                            ], user.role), 
+                            {}, 
+                            { class: "border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" } %>
+                        <%= form.submit "Update", 
+                            class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm transition-colors",
+                            data: { confirm: "Are you sure you want to update #{user.email}'s role?" } %>
+                      <% end %>
+                    <% else %>
+                      <span class="text-sm text-gray-500">Cannot modify own role</span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <!-- Role Explanations -->
+  <div class="mt-8 bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h2 class="text-xl font-bold text-gray-800">System Roles Explained</h2>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- User Role -->
+        <div class="border border-green-200 rounded-lg p-4">
+          <div class="flex items-center mb-3">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+              User
+            </span>
+          </div>
+          <h4 class="font-medium text-gray-800 mb-2">Regular User</h4>
+          <ul class="text-sm text-gray-600 space-y-1">
+            <li>• Create and manage own posts</li>
+            <li>• View published content</li>
+            <li>• Edit own profile</li>
+            <li>• Basic content interaction</li>
+          </ul>
+        </div>
+        <!-- Admin Role -->
+        <div class="border border-red-200 rounded-lg p-4">
+          <div class="flex items-center mb-3">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+              Admin
+            </span>
+          </div>
+          <h4 class="font-medium text-gray-800 mb-2">Administrator</h4>
+          <ul class="text-sm text-gray-600 space-y-1">
+            <li>• Access admin panel</li>
+            <li>• View all users (read-only)</li>
+            <li>• Manage publishers</li>
+            <li>• Monitor system activity</li>
+          </ul>
+        </div>
+        <!-- Master Role -->
+        <div class="border border-purple-200 rounded-lg p-4">
+          <div class="flex items-center mb-3">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+              Master
+            </span>
+          </div>
+          <h4 class="font-medium text-gray-800 mb-2">Master Admin</h4>
+          <ul class="text-sm text-gray-600 space-y-1">
+            <li>• Full system access</li>
+            <li>• Manage all users and roles</li>
+            <li>• Delete users</li>
+            <li>• Complete administrative control</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

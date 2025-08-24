@@ -1,0 +1,76 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">All Posts</h1>
+      <div class="flex space-x-3">
+        <% if user_signed_in? && current_user.can_create_posts? %>
+          <%= link_to "My Posts", my_posts_posts_path, 
+              class: "bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300" %>
+          <%= link_to "Create New Post", new_post_path, 
+              class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300" %>
+        <% end %>
+      </div>
+    </div>
+    <% if @posts.any? %>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <% @posts.each do |post| %>
+          <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-2">
+                <h2 class="text-xl font-semibold text-gray-900 flex-1 pr-2">
+                  <%= link_to post.title, post_path(post), 
+                      class: "hover:text-blue-600 transition duration-300" %>
+                </h2>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Published
+                </span>
+              </div>
+              <p class="text-gray-600 text-sm mb-3">
+                By <%= post.user.email %> • <%= post.created_at.strftime("%B %d, %Y") %>
+                <% if post.publisher.present? %>
+                  <br>
+                  <span class="text-blue-600 text-xs">
+                    Published to: <%= link_to post.publisher.name, publisher_path(post.publisher), class: "hover:text-blue-800 underline" %>
+                  </span>
+                <% end %>
+              </p>
+              <p class="text-gray-700 leading-relaxed">
+                <%= truncate(post.content, length: 150) %>
+              </p>
+              <div class="mt-4 flex justify-between items-center">
+                <%= link_to "Read More", post_path(post), 
+                    class: "text-blue-600 hover:text-blue-800 font-medium" %>
+                <% if user_signed_in? && current_user == post.user %>
+                  <div class="flex space-x-2">
+                    <%= link_to "Edit", edit_post_path(post), 
+                        class: "text-green-600 hover:text-green-800 text-sm" %>
+                    <%= link_to "Delete", post_path(post), 
+                        method: :delete, 
+                        data: { confirm: "Are you sure?" },
+                        class: "text-red-600 hover:text-red-800 text-sm" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-12">
+        <div class="max-w-md mx-auto">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No posts yet</h3>
+          <p class="mt-1 text-sm text-gray-500">Get started by creating your first post.</p>
+          <% if user_signed_in? && current_user.can_create_posts? %>
+            <div class="mt-6">
+              <%= link_to "Create New Post", new_post_path, 
+                  class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
