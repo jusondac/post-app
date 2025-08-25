@@ -1,4 +1,10 @@
-# Authorization Management System
+# Post Management System
+<img width="1862" height="931" alt="Screenshot From 2025-08-25 07-06-28" src="https://github.com/user-attachments/assets/b75d083c-7fc8-4f5c-ae6f-2248d9867b8a" />
+<img width="1862" height="931" alt="Screenshot From 2025-08-25 07-06-52" src="https://github.com/user-attachments/assets/6ae9c1c6-2a70-48f4-81dc-9739f21f143c" />
+<img width="1862" height="931" alt="Screenshot From 2025-08-25 07-06-59" src="https://github.com/user-attachments/assets/df60c7ea-8379-4ca1-918d-5b965a6093c5" />
+<img width="1862" height="931" alt="Screenshot From 2025-08-25 07-07-10" src="https://github.com/user-attachments/assets/67ade78e-1cf0-4b7f-b83b-8b98895a4e7f" />
+<img width="1862" height="931" alt="Screenshot From 2025-08-25 07-08-10" src="https://github.com/user-attachments/assets/58af3303-66f0-4b9c-afcf-f69108512538" />
+
 
 A comprehensive Rails application demonstrating role-based authorization and content management with a sophisticated user permission system.
 
