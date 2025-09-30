@@ -67,4 +67,4 @@ end
 gem "devise", "~> 4.9"
 gem "awesome_print", "~> 1.9"
 gem "kaminari", "~> 1.2"
-gem "ransack", "~> 4.0"
+gem "ransack", "~> 4.4"
